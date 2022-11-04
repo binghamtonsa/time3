@@ -2,7 +2,6 @@
 
 ## Plans
 - Will be written in Javascript (Node, Express, and React(will make life much easier))
-- Main site will require google sign in.
 - Security will be main concern 
 - All code will be documented for future purposes
 - JS files will be connected wth ES modules
