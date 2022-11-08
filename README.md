@@ -29,6 +29,10 @@ $ npm i nodemon -D
 ```bash
 $ npm i bycrpt --save
 ```
+- Some others:
+```
+$ npm i express cors dotenv express-validator axios
+```
 
 
 #### Downloading the live database
