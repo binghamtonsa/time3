@@ -1,3 +1,5 @@
+// Basic JS function to check the API and see if the call works
+
 const https = require('https')
 const dotenv = require('dotenv')
 dotenv.config();

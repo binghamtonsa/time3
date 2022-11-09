@@ -1,8 +1,10 @@
 import React from 'react'
+import Home from './pages'
 
 function App() {
+
   return (
-    <p>TIMESHEET</p>
+    <Home />
   )
 }
 
