@@ -1,7 +1,7 @@
 // Basic JS function to check the API and see if the call works
 
 const https = require('https')
-const dotenv = require('dotenv')
+const dotenv = require('dotenv');
 dotenv.config();
 
 class Login {
@@ -36,19 +36,22 @@ class Login {
   }
 
   request(options, body) {
-    var request = https.request(options, (response) => {
-      console.log('STATUS: ' + response.statusCode);
-      console.log(response.statusMessage);
+    // utlized promise to get .then() on server.js
+    return new Promise((resolve, reject) => {
+      var request = https.request(options, function(response) {
+        return resolve(response);
+      })
+      request.on('error', (error) => {
+        reject(error);
+      })
+  
+      // write body 
+      request.write(body)
+      request.end()
     })
-    request.on('error', (error) => {
-    console.error(error)
-    })
-
-    // write body 
-    request.write(body)
-    request.end()
   }
 }
+
 
 module.exports = Login;
 
