@@ -51,16 +51,19 @@ function Login() {
   return (
     <div className='login-container'>
       <div className='login-wrapper'>
-        <form onSubmit={ (e) => handleSubmit(e)}>
-          <h2>SA Timesheet</h2>
-          <h3>Login Form</h3>
-          <input type='text' placeholder='Email' value={username} required onChange={ (e) => handleEmailChange(e)} />
-          <input type='text'  placeholder='Password' value={password} required onChange={ (e) => handlePasswordChange(e)} />
-          <input type="submit" value="Submit"/>
-        </form>
+        <div className='form-container'>
+          <div className='form-wrapper'>
+            <form onSubmit={ (e) => handleSubmit(e)}>
+              <h2>SA Timesheet</h2>
+              <h3>Login Form</h3>
+              <input type='text' placeholder='Email' value={username} required onChange={ (e) => handleEmailChange(e)} />
+              <input type='text'  placeholder='Password' value={password} required onChange={ (e) => handlePasswordChange(e)} />
+              <input type="submit" value="Submit"/>
+            </form>
+          </div>
+        </div>
       </div>
     </div>
-
   )
 }
 
