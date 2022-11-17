@@ -28,8 +28,9 @@ function login() {
       body: formBody
     })
     .then((response) => {
-      console.log(response);
-      console.log(response.body);
+      if(response.ok) {
+        console.log(response.json());
+      }
     })  
   }
   
