@@ -1,11 +1,24 @@
-import React from 'react'
+import React, { useState } from 'react'
+import './App.css'
 
-const username = process.env.REACT_APP_LOGIN_U;
-const password = process.env.REACT_APP_LOGIN_P;
+// const username = process.env.REACT_APP_LOGIN_U;
+// const password = process.env.REACT_APP_LOGIN_P;
 
-function login() {
+function Login() {
 
-  function handleClick() {
+  const [username, setUsername] = useState('');
+  const [password, setPassowrd] = useState('');
+
+
+  const handleEmailChange = (e) => {
+    setUsername(e.target.value);
+  }
+
+  const handlePasswordChange = (e) => {
+    setPassowrd(e.target.value);
+  }
+
+  const handleSubmit = (e) => {
     var details = {
       'usrnme': username,
       'pswrd': password,
@@ -28,23 +41,27 @@ function login() {
       body: formBody
     })
     .then((response) => {
-      if(response.ok) {
-        console.log(response.json());
-      }
+        console.log(response.status);
+        alert('Login submitted with : ' + username + ' & ' + password);
     })  
+    e.preventDefault(); 
   }
   
 
   return (
-    <div onClick={handleClick} style={{
-      textAlign: 'center',
-      width: '100px',
-      border: '1px solid gray',
-      borderRadius: '5px'
-    }}>
-      Send data to backend
+    <div className='login-container'>
+      <div className='login-wrapper'>
+        <form onSubmit={ (e) => handleSubmit(e)}>
+          <h2>SA Timesheet</h2>
+          <h3>Login Form</h3>
+          <input type='text' placeholder='Email' value={username} required onChange={ (e) => handleEmailChange(e)} />
+          <input type='text'  placeholder='Password' value={password} required onChange={ (e) => handlePasswordChange(e)} />
+          <input type="submit" value="Submit"/>
+        </form>
+      </div>
     </div>
-  );
+
+  )
 }
 
-export default login
+export default Login

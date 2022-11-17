@@ -23,10 +23,8 @@ app.post('/v1/api/login', function(req, res) {
       } else {
         console.log(`Some Error Code: ${data.statusCode} Occured.`);
       }
-      res.send({
-        'status': data.statusCode,
-        'auth': data.headers.authorization
-      })
+      var auth = data.headers.authorization;
+      res.sendStatus(data.statusCode);
     })
   });
 
