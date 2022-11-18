@@ -18,6 +18,12 @@ function Login() {
     setPassowrd(e.target.value);
   }
 
+  // zeros 
+  const clearState = (e) => {
+    setUsername('');
+    setPassowrd('');
+  }
+
   const handleSubmit = (e) => {
     var details = {
       'usrnme': username,
@@ -44,7 +50,8 @@ function Login() {
         console.log(response.status);
         alert('Login submitted with : ' + username + ' & ' + password);
     })  
-    e.preventDefault(); 
+    e.preventDefault();
+    clearState();
   }
   
 
@@ -53,12 +60,12 @@ function Login() {
       <div className='login-wrapper'>
         <div className='form-container'>
           <div className='form-wrapper'>
-            <form onSubmit={ (e) => handleSubmit(e)}>
-              <h2>SA Timesheet</h2>
-              <h3>Login Form</h3>
-              <input type='text' placeholder='Email' value={username} required onChange={ (e) => handleEmailChange(e)} />
-              <input type='text'  placeholder='Password' value={password} required onChange={ (e) => handlePasswordChange(e)} />
-              <input type="submit" value="Submit"/>
+            <form id='form' onSubmit={ (e) => handleSubmit(e)}>
+              <h2 id='form-header'>SA Timesheet</h2>
+              <h3 id='form-secondary' >Login Form</h3>
+              <input id='values' type='text' placeholder='Email' value={username} required onChange={ (e) => handleEmailChange(e)} />
+              <input id='values' type='text'  placeholder='Password' value={password} required onChange={ (e) => handlePasswordChange(e)} />
+              <input id='values' type="submit" value="Submit"/>
             </form>
           </div>
         </div>
