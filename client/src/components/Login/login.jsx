@@ -1,13 +1,16 @@
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import './App.css'
 
 // const username = process.env.REACT_APP_LOGIN_U;
 // const password = process.env.REACT_APP_LOGIN_P;
 
-function Login() {
+const Login = () => {
 
   const [username, setUsername] = useState('');
   const [password, setPassowrd] = useState('');
+  const [status, setStatus] = useState('');
+  const navigate = useNavigate();
 
 
   const handleEmailChange = (e) => {
@@ -22,6 +25,7 @@ function Login() {
   const clearState = (e) => {
     setUsername('');
     setPassowrd('');
+    setStatus('');
   }
 
   const handleSubmit = (e) => {
@@ -47,8 +51,11 @@ function Login() {
       body: formBody
     })
     .then((response) => {
-        console.log(response.status);
-        alert('Login submitted with : ' + username + ' & ' + password);
+        if (response.status === 200) {
+          navigate('/dashboard');
+        } else {
+          alert('Didnt not work');
+        }
     })  
     e.preventDefault();
     clearState();
@@ -64,7 +71,7 @@ function Login() {
               <h2 id='form-header'>SA Timesheet</h2>
               <h3 id='form-secondary' >Login Form</h3>
               <input id='values' type='text' placeholder='Email' value={username} required onChange={ (e) => handleEmailChange(e)} />
-              <input id='values' type='text'  placeholder='Password' value={password} required onChange={ (e) => handlePasswordChange(e)} />
+              <input id='values' type='password'  placeholder='Password' value={password} required onChange={ (e) => handlePasswordChange(e)} />
               <input id='values' type="submit" value="Submit"/>
             </form>
           </div>
