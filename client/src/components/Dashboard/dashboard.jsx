@@ -30,7 +30,6 @@ const Dashboard = () => {
   }
 
   const handleClockIn = async(e) => {
-    // eslint-disable-next-line
     await getLocationLat();
     await getLocationLng();
     var details = {
