@@ -40,7 +40,35 @@ const Dashboard = () => {
   }
 
   const handleClockOut = (e) => {
-    
+    var details = {
+      'latitude': '70.003',
+      'longitude': '52.004',
+    };
+
+    var formBody = [];
+    for (var property in details) {
+      var encodedKey = encodeURIComponent(property);
+      var encodedValue = encodeURIComponent(details[property]);
+      formBody.push(encodedKey + "=" + encodedValue);
+    }
+    formBody = formBody.join("&");
+
+    fetch("http://localhost:8080/v1/api/clockout", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+      },
+      body: formBody
+    })
+    .then((response) => {
+        if (response.status === 200) {
+          alert("Clocked Out");
+        } else {
+          alert('Didnt not work');
+        }
+    })  
+    e.preventDefault();
+
   }
 
   return(

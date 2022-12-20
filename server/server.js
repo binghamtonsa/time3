@@ -1,8 +1,8 @@
-const Login = require('./auth.js')
-const clockIn = require('./app.js')
-const express = require('express');
-const dotenv = require('dotenv');
-const cors = require('cors');
+import { Login } from './auth.js'
+import { clockIn, clockOut } from './app.js';
+import express from 'express';
+import dotenv from 'dotenv';
+import cors from 'cors';
 dotenv.config();
 
 const app = express();
@@ -37,10 +37,14 @@ app.post('/v1/api/login', function(req, res) {
   app.post('/v1/api/clockin', function(req, res) {
     let data = req.body;
     var clocked = new clockIn(auth, data.latitude, data.longitude);
-    console.log('auth: ' + auth);
-    console.log('lat: ' + data.latitude + " , " + 'long: ' + data.longitude);
-    clocked.getUserInfo();
     clocked.request();
+    res.sendStatus(200);
+  })
+
+  app.post('/v1/api/clockout', function(req, res) {
+    let data = req.body;
+    var clockedOut = new clockOut(auth, data.latitude, data.longitude);
+    clockedOut.request();
     res.sendStatus(200);
   })
 

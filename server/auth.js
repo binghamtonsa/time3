@@ -1,10 +1,10 @@
 // Basic JS function to check the API and see if the call works
 
-const https = require('https')
-const dotenv = require('dotenv');
+import https from 'https'
+import dotenv from'dotenv';
 dotenv.config();
 
-class Login {
+export class Login {
   constructor(username, password, port) {
     this.username = username;
     this.password = password;
@@ -52,7 +52,5 @@ class Login {
   }
 }
 
-
-module.exports = Login;
 
 
