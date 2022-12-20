@@ -7,10 +7,36 @@ import logo from './sa_log.png'
 
 const Dashboard = () => {
 
+  const [lat, setLat] = useState('');
+  const [lng, setLng] = useState('');
+
+  const getLocationLat = () => {
+    if (!navigator.geolocation) {
+      alert("Can't get location");
+    }
+    else {
+      navigator.geolocation.getCurrentPosition((pos) => {
+        setLat(pos.coords.latitude);
+      })
+    }
+    getLocationLng();
+  }
+
+  const getLocationLng = () => {
+    if (!navigator.geolocation) {
+      alert("Can't get location");
+    }
+    else {
+      return (navigator.geolocation.getCurrentPosition((pos) => {
+        setLng(pos.coords.longitude);
+      }))
+    }
+  }
+
   const handleClockIn = (e) => {
     var details = {
-      'latitude': '70.003',
-      'longitude': '52.004',
+      'latitude': lat,
+      'longitude': lng,
     };
   
     // creating the x-www-form-urlencoding 
@@ -41,8 +67,8 @@ const Dashboard = () => {
 
   const handleClockOut = (e) => {
     var details = {
-      'latitude': '70.003',
-      'longitude': '52.004',
+      'latitude': lat,
+      'longitude': lng,
     };
 
     var formBody = [];
@@ -72,7 +98,7 @@ const Dashboard = () => {
   }
 
   return(
-    <div className='dashboard-container'>
+    <div className='dashboard-container' onMouseOver={getLocationLat}>
       <div className='nav-container'>
         <div className='nav-wrapper'>
           {/* <nav className='navbar'></nav> */}

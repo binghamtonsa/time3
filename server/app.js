@@ -40,6 +40,7 @@ export class clockIn {
             'latitude': this.lat,
             'longitude': this.lng
         })
+        console.log(data);
 
         const header = {
             'Accept': '*/*',
