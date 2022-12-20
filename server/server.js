@@ -17,7 +17,6 @@ var auth = "";
 
 app.post('/v1/api/login', function(req, res) {
     let data = req.body;
-    console.log(data);
     var login1 = new Login(data.usrnme, data.pswrd, apiPort);
     login1.request(login1.createOptions(), login1.createBody())
     .then((data) => {
@@ -28,7 +27,6 @@ app.post('/v1/api/login', function(req, res) {
         console.log(`Some Error Code: ${data.statusCode} Occured.`);
       }
       auth = data.headers.authorization;
-      console.log(auth);
       res.sendStatus(data.statusCode);
       
     })
@@ -37,18 +35,32 @@ app.post('/v1/api/login', function(req, res) {
   app.post('/v1/api/clockin', function(req, res) {
     let data = req.body;
     var clocked = new clockIn(auth, data.latitude, data.longitude);
-    clocked.request();
-    res.sendStatus(200);
+    clocked.request()
+    .then().then((data) => {
+      if (data.status == 200) {
+        console.log("Clocked In!");
+      }
+      else {
+        console.log("Error clocking in: " + data.status)
+      }
+      res.sendStatus(data.status);
+    })
   })
 
   app.post('/v1/api/clockout', function(req, res) {
     let data = req.body;
     var clockedOut = new clockOut(auth, data.latitude, data.longitude);
-    clockedOut.request();
-    res.sendStatus(200);
+    clockedOut.request()
+    .then((data) => {
+      if (data.status == 200) {
+        console.log("Clocked Out!");
+      }
+      else {
+        console.log("Error clocking in: " + data.status)
+      }
+      res.sendStatus(data.status);
+    })
   })
 
   app.listen(port);
   console.log('Server started at http://localhost:' + port);
-
-// var login1 = new Login(process.env.USRNME,process.env.PSWRD, process.env.PORT);

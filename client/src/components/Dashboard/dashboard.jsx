@@ -61,7 +61,7 @@ const Dashboard = () => {
         if (response.status === 200) {
           alert("Clocked In");
         } else {
-          alert('Didnt not work');
+          alert('Error status: ' + response.status);
         }
     })  
     e.preventDefault();
@@ -96,7 +96,7 @@ const Dashboard = () => {
         if (response.status === 200) {
           alert("Clocked Out");
         } else {
-          alert('Didnt not work');
+          alert('Error status: ' + response.status);
         }
     })  
     e.preventDefault();
