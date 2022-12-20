@@ -2,9 +2,6 @@ import React, { useState } from 'react'
 import './App.css'
 import logo from './sa_log.png'
 
-
-
-
 const Dashboard = () => {
   
   const [lat, setLat] = useState('0');
@@ -59,6 +56,7 @@ const Dashboard = () => {
     })
     .then((response) => {
         if (response.status === 200) {
+          // change a status 
           alert("Clocked In");
         } else {
           alert('Error status: ' + response.status);

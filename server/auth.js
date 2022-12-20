@@ -1,5 +1,3 @@
-// Basic JS function to check the API and see if the call works
-
 import https from 'https'
 import dotenv from'dotenv';
 
