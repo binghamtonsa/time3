@@ -6,11 +6,11 @@ import logo from './sa_log.png'
 
 
 const Dashboard = () => {
+  
+  const [lat, setLat] = useState('0');
+  const [lng, setLng] = useState('0');
 
-  const [lat, setLat] = useState('');
-  const [lng, setLng] = useState('');
-
-  const getLocationLat = () => {
+  const getLocationLat = async() => {
     if (!navigator.geolocation) {
       alert("Can't get location");
     }
@@ -19,21 +19,23 @@ const Dashboard = () => {
         setLat(pos.coords.latitude);
       })
     }
-    getLocationLng();
   }
 
-  const getLocationLng = () => {
+  const getLocationLng = async() => {
     if (!navigator.geolocation) {
       alert("Can't get location");
     }
     else {
-      return (navigator.geolocation.getCurrentPosition((pos) => {
+      (navigator.geolocation.getCurrentPosition((pos) => {
         setLng(pos.coords.longitude);
       }))
     }
   }
 
-  const handleClockIn = (e) => {
+  const handleClockIn = async(e) => {
+    // eslint-disable-next-line
+    await getLocationLat();
+    await getLocationLng();
     var details = {
       'latitude': lat,
       'longitude': lng,
@@ -65,7 +67,11 @@ const Dashboard = () => {
     e.preventDefault();
   }
 
-  const handleClockOut = (e) => {
+  const handleClockOut = async(e) => {
+    // eslint-disable-next-line
+    await getLocationLat();
+    await getLocationLng();
+
     var details = {
       'latitude': lat,
       'longitude': lng,
@@ -98,7 +104,7 @@ const Dashboard = () => {
   }
 
   return(
-    <div className='dashboard-container' onMouseOver={getLocationLat}>
+    <div className='dashboard-container'>
       <div className='nav-container'>
         <div className='nav-wrapper'>
           {/* <nav className='navbar'></nav> */}
