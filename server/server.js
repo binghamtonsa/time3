@@ -57,7 +57,7 @@ app.post('/v1/api/login', function(req, res) {
         console.log("Clocked Out!");
       }
       else {
-        console.log("Error clocking in: " + data.status)
+        console.log("Error clocking out: " + data.status)
       }
       res.sendStatus(data.status);
     })

@@ -65,15 +65,18 @@ const Login = () => {
 
   return (
     <div className='login-container'>
-          <div className='form-wrapper'>
-            <form id='form' onSubmit={ (e) => handleSubmit(e)}>
-              <h2 id='form-header'>Timesheet</h2>
-              <img id="logo" src={logo} alt='logo-main' />
-              <input id='values' type='text' placeholder='Email' value={username} required onChange={ (e) => handleEmailChange(e)} />
-              <input id='values' type='password'  placeholder='Password' value={password} required onChange={ (e) => handlePasswordChange(e)} />
-              <input id='valuesSub' type="submit" value="Submit"/>
-            </form>
-          </div>
+      <div className='spacer layer1'>
+        <img id="logo-main" src={logo} alt='logo-main' />
+      </div>
+      <div className='form-wrapper'>
+        <form id='form' onSubmit={ (e) => handleSubmit(e)}>
+          <h2 id='form-header'>Timesheet</h2>
+          <img id="logo" src={logo} alt='logo-main' />
+          <input id='values' type='text' placeholder='Email' value={username} required onChange={ (e) => handleEmailChange(e)} />
+          <input id='values' type='password'  placeholder='Password' value={password} required onChange={ (e) => handlePasswordChange(e)} />
+          <input id='valuesSub' type="submit" value="Submit"/>
+        </form>
+      </div>
     </div>
   )
 }
