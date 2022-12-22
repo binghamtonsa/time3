@@ -1,8 +1,12 @@
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import './App.css'
 import logo from './sa_log.png'
 
 const Dashboard = () => {
+
+  const URL = 'http://localhost:8080';
+  const navigate = useNavigate();
   
   const [lat, setLat] = useState('0');
   const [lng, setLng] = useState('0');
@@ -29,6 +33,18 @@ const Dashboard = () => {
     }
   }
 
+  // creating the x-www-form-urlencoding 
+  function createFormBody(data) {
+    var formBody = [];
+    for (var property in data) {
+      var encodedKey = encodeURIComponent(property);
+      var encodedValue = encodeURIComponent(data[property]);
+      formBody.push(encodedKey + "=" + encodedValue);
+    }
+    formBody = formBody.join("&");
+    return formBody;
+  }
+
   const handleClockIn = async(e) => {
     await getLocationLat();
     await getLocationLng();
@@ -36,22 +52,13 @@ const Dashboard = () => {
       'latitude': lat,
       'longitude': lng,
     };
-  
-    // creating the x-www-form-urlencoding 
-    var formBody = [];
-    for (var property in details) {
-      var encodedKey = encodeURIComponent(property);
-      var encodedValue = encodeURIComponent(details[property]);
-      formBody.push(encodedKey + "=" + encodedValue);
-    }
-    formBody = formBody.join("&");
-  
-    fetch("http://localhost:8080/v1/api/clockin", {
+    
+    fetch(URL + "/v1/api/clockin", {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
       },
-      body: formBody
+      body: createFormBody(details)
     })
     .then((response) => {
         if (response.status === 200) {
@@ -74,20 +81,12 @@ const Dashboard = () => {
       'longitude': lng,
     };
 
-    var formBody = [];
-    for (var property in details) {
-      var encodedKey = encodeURIComponent(property);
-      var encodedValue = encodeURIComponent(details[property]);
-      formBody.push(encodedKey + "=" + encodedValue);
-    }
-    formBody = formBody.join("&");
-
-    fetch("http://localhost:8080/v1/api/clockout", {
+    fetch(URL + "/v1/api/clockout", {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
       },
-      body: formBody
+      body: createFormBody(details)
     })
     .then((response) => {
         if (response.status === 200) {
@@ -97,7 +96,25 @@ const Dashboard = () => {
         }
     })  
     e.preventDefault();
+  }
 
+  const handleLogOut = async(e) => {
+    fetch(URL + "/v1/api/logout", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+      }
+    })
+    .then((response) => {
+      if (response.status === 204) {
+        navigate('/');
+        alert("logged out");
+      }
+      else {
+        alert('Error status: ' + response.status);
+      }
+    })
+    e.preventDefault();
   }
 
   return(
@@ -113,6 +130,7 @@ const Dashboard = () => {
         <div className='timesheet-wrapper'>
           <button type='button' className='clock-in' onClick={handleClockIn}>Clock in</button>
           <button type='button' className='clock-in' onClick={handleClockOut}>Clock out</button>
+          <button type='button' className='clock-in' onClick={handleLogOut}>Log Out</button>
         </div>
       </div>
     </div>

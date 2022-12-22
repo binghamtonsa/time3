@@ -1,5 +1,5 @@
 import { Login } from './auth.js'
-import { clockIn, clockOut } from './app.js';
+import { clockIn, clockOut, logOut } from './app.js';
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
@@ -27,6 +27,7 @@ app.post('/v1/api/login', function(req, res) {
         console.log(`Some Error Code: ${data.statusCode} Occured.`);
       }
       auth = data.headers.authorization;
+      console.log(auth);
       res.sendStatus(data.statusCode);
       
     })
@@ -57,6 +58,20 @@ app.post('/v1/api/login', function(req, res) {
       }
       else {
         console.log("Error clocking in: " + data.status)
+      }
+      res.sendStatus(data.status);
+    })
+  })
+
+  app.post('/v1/api/logout', function(req, res) {
+    var LoggedOut = new logOut(auth);
+    LoggedOut.request()
+    .then((data) => {
+      if (data.status == 204) {
+        console.log("Logged Out");
+      }
+      else {
+        console.log("Error logging out: " + data.status)
       }
       res.sendStatus(data.status);
     })
