@@ -10,9 +10,17 @@ const Login = () => {
 
   const [username, setUsername] = useState('');
   const [password, setPassowrd] = useState('');
-  const [status, setStatus] = useState('');
+  const [showLoading, setLoading] = useState(false);
+  const [showSubmit, setSubmit] = useState(true);
+  const [showStatus, setStatus] = useState(false);
+  const [showErrorStyle, setErrorStyle] = useState("values");
   const navigate = useNavigate();
 
+
+  const handleLoading = () => {
+    setSubmit(false);
+    setLoading(true);
+  }
 
   const handleEmailChange = (e) => {
     setUsername(e.target.value);
@@ -26,10 +34,12 @@ const Login = () => {
   const clearState = (e) => {
     setUsername('');
     setPassowrd('');
-    setStatus('');
   }
 
   const handleSubmit = (e) => {
+    
+    handleLoading();
+    setStatus(false);
     var details = {
       'usrnme': username,
       'pswrd': password,
@@ -44,22 +54,33 @@ const Login = () => {
     }
     formBody = formBody.join("&");
   
-    fetch("http://localhost:8080/v1/api/login", {
+    return new Promise((resolve) => {
+      fetch("http://localhost:8080/v1/api/login", {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
       },
       body: formBody
+      })
+      .then((response) => {
+          if (response.status === 200) {
+            resolve(response);
+            navigate('/dashboard');
+            setLoading(false);
+            setSubmit(true);
+            setErrorStyle('values')
+          } else {
+            resolve(response);
+            setLoading(false);
+            setSubmit(true);
+            setStatus(true);
+            setErrorStyle('errorInputs')
+          }
+      })  
+      e.preventDefault();
+      clearState();
     })
-    .then((response) => {
-        if (response.status === 200) {
-          navigate('/dashboard');
-        } else {
-          alert('Didnt not work');
-        }
-    })  
-    e.preventDefault();
-    clearState();
+    
   }
   
 
@@ -72,9 +93,16 @@ const Login = () => {
         <form id='form' onSubmit={ (e) => handleSubmit(e)}>
           <h2 id='form-header'>Timesheet</h2>
           <img id="logo" src={logo} alt='logo-main' />
-          <input id='values' type='text' placeholder='Email' value={username} required onChange={ (e) => handleEmailChange(e)} />
-          <input id='values' type='password'  placeholder='Password' value={password} required onChange={ (e) => handlePasswordChange(e)} />
-          <input id='valuesSub' type="submit" value="Submit"/>
+          <input id={ showErrorStyle } type='text' placeholder='Email' value={username} required onChange={ (e) => handleEmailChange(e)} />
+          <input id={ showErrorStyle } type='password'  placeholder='Password' value={password} required onChange={ (e) => handlePasswordChange(e)} />
+          { showLoading && 
+            <div class="spinner">
+              <svg viewBox='0 0 100 100'>
+                <circle cx="50" cy="50" r="20" />
+              </svg>
+            </div> }
+          { showStatus && <p className='error'>Error logging in, incorrect email or password</p> }
+          { showSubmit && <button id='valuesSub' type="submit" value="Submit">Submit</button> }
         </form>
       </div>
     </div>

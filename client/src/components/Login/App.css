@@ -18,7 +18,7 @@ body {
 .form-wrapper {
     background: #333333;
     width: 400px;
-    height: 450px;
+    height: 460px;
     position: absolute;
     margin: -50px 0 0 -50px;
     border: 2px solid #333333;
@@ -60,7 +60,29 @@ body {
     padding: 7px 0;
     background: transparent;
     transition: border-color 0.2s;
-  
+}
+
+#errorInputs {
+    position: relative;
+    font-family: inherit;
+    width: 100%;
+    border: 0;
+    border-bottom: 2px solid red;
+    outline: 0;
+    font-size: 1.3rem;
+    color: #ffffff;
+    padding: 7px 0;
+    background: transparent;
+    transition: border-color 0.2s;
+}
+
+#errorInputs::placeholder {
+    color: red;
+    opacity: 0.75;
+}
+
+.error {
+    color: red;
 }
 
 #valuesSub {
@@ -74,12 +96,13 @@ body {
     text-decoration: none;
     display: inline-block;
     font-size: 16px;
-    margin: 4px 2px;
+    margin: 2px 2px;
     margin-bottom: 10px;
     transition-duration: 0.7s ;
     transition: 0.2s ease-in-out;
-    
 }
+
+
 
 #valuesSub:hover {
     border-color: #ffffff;
@@ -103,4 +126,57 @@ body {
     max-height: 100%;
     max-width: 100%;
     padding: 2%;
+}
+
+.spinner {
+    width: 115px;
+    height: 115px;
+}
+
+.spinner svg {
+    animation: rotate 1s linear infinite;
+}
+
+.spinner circle {
+    animation:
+        color 2s ease-in-out infinite,
+        dash 1.5s ease-in-out infinite;
+    fill: none;
+    stroke-width: 3;
+    stroke: black;
+    stroke-linecap: round;
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes color {
+    0%, 100% {
+        stroke: #ffffff;
+    }
+    50% {
+        stroke: #246021;
+    }
+}
+
+@keyframes dash {
+    0% {
+        stroke-dasharray: 1,200;
+        stroke-dashoffset: 0;
+    }
+    50% {
+        stroke-dasharray: 89,200;
+        stroke-dashoffset: -35;
+    }
+    100% {
+        stroke-dasharray: 95,200;
+        stroke-dashoffset: -124;
+    }
 }
