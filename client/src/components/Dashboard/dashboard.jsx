@@ -8,8 +8,23 @@ const Dashboard = () => {
   const URL = 'http://localhost:8080';
   const navigate = useNavigate();
   
+  
   const [lat, setLat] = useState('0');
   const [lng, setLng] = useState('0');
+  const [clockedOutNotes, setClockOutNotes] = useState(false);
+  const [notes, setNotes] = useState(''); 
+  const [showClockOut, setClockout] = useState(false);
+  const [clockedIn, setClockIn] = useState(true);
+  const [time, setTime] = useState("0");
+
+  const getTime = async() => {
+    const current = new Date();
+    const timeNow = current.toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2 digit"
+    });
+    setTime(timeNow);
+  }
 
   const getLocationLat = async() => {
     if (!navigator.geolocation) {
@@ -46,6 +61,7 @@ const Dashboard = () => {
   }
 
   const handleClockIn = async(e) => {
+    //await getTime();
     await getLocationLat();
     await getLocationLng();
     var details = {
@@ -62,8 +78,8 @@ const Dashboard = () => {
     })
     .then((response) => {
         if (response.status === 200) {
-          // change a status 
-          alert("Clocked In");
+          setClockout(true);
+          setClockIn(false);
         } else {
           alert('Error status: ' + response.status);
         }
@@ -71,14 +87,24 @@ const Dashboard = () => {
     e.preventDefault();
   }
 
+  const handleClockOutNotes = async(e) => {
+    setClockOutNotes(true);
+    setClockout(false);
+  }
+  
+  const handleNotes = (e) => {
+    setNotes(e.target.value);
+  }
+
   const handleClockOut = async(e) => {
-    // eslint-disable-next-line
+    //await getTime();
     await getLocationLat();
     await getLocationLng();
 
     var details = {
       'latitude': lat,
       'longitude': lng,
+      'text': notes
     };
 
     fetch(URL + "/v1/api/clockout", {
@@ -90,12 +116,16 @@ const Dashboard = () => {
     })
     .then((response) => {
         if (response.status === 200) {
-          alert("Clocked Out");
+          setClockOutNotes(false);
+          setClockout(false);
+          setClockIn(true);
+          
         } else {
           alert('Error status: ' + response.status);
         }
     })  
     e.preventDefault();
+    setNotes("");
   }
 
   const handleLogOut = async(e) => {
@@ -108,7 +138,6 @@ const Dashboard = () => {
     .then((response) => {
       if (response.status === 204) {
         navigate('/');
-        alert("logged out");
       }
       else {
         alert('Error status: ' + response.status);
@@ -120,18 +149,28 @@ const Dashboard = () => {
   return(
     <div className='dashboard-container'>
       <div className='nav-container'>
-        <div className='nav-wrapper'>
-          {/* <nav className='navbar'></nav> */}
           <img id="logo" src={logo} alt='logo-main' />
           <h1 id='header'>Dashboard</h1>
-        </div>
+          <button type='button' className='logout' onClick={handleLogOut}>Log Out</button>
       </div>
       <div className='timesheet-container'>
-        <div className='timesheet-wrapper'>
-          <button type='button' className='clock-in' onClick={handleClockIn}>Clock in</button>
-          <button type='button' className='clock-in' onClick={handleClockOut}>Clock out</button>
-          <button type='button' className='clock-in' onClick={handleLogOut}>Log Out</button>
+        <div className="time-wrap">
+          { clockedIn && <button type='button' className='clock-in' onClick={handleClockIn}>Clock in</button> }
+          { showClockOut && <button type='button' className='clock-in' onClick={handleClockOutNotes}>Clock out</button> }
+          { clockedOutNotes && 
+            <div className='notes'>
+              <input id='clockedOutNotes' type='text' placeholder='Notes:' value={notes} required onChange={ (e) => handleNotes(e) } />
+              <button type='button' className='clock-in' onClick={handleClockOut}>Save</button>
+            </div> 
+          }
         </div>
+        
+        <div className='status'>Status:
+           { clockedIn && <p id='out'>Clocked Out </p> }
+           { showClockOut &&  <p id='in'>Clocked In</p> }
+        </div> 
+        { <div className='details'>Details</div> }
+        { <div className='print'>Print Timesheet</div> }
       </div>
     </div>
   );

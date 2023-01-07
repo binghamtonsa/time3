@@ -50,7 +50,7 @@ app.post('/v1/api/login', function(req, res) {
 
   app.post('/v1/api/clockout', function(req, res) {
     let data = req.body;
-    var clockedOut = new clockOut(auth, data.latitude, data.longitude);
+    var clockedOut = new clockOut(auth, data.latitude, data.longitude, data.text);
     clockedOut.request()
     .then((data) => {
       if (data.status == 200) {

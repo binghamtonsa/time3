@@ -48,10 +48,11 @@ export class clockIn {
 }
 
 export class clockOut {
-    constructor(auth, lat, lng ) {
+    constructor(auth, lat, lng, notes ) {
         this.auth = auth;
         this.lat = lat;
         this.lng = lng;
+        this.notes = notes;
     }
 
     request() {
@@ -66,7 +67,7 @@ export class clockOut {
             "longitude": this.lng,
             "accuracy": "low",
             "attestations": [{
-                "text": "hello world"
+                "text": this.notes
                 }
             ]
         })

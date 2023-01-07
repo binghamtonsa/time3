@@ -95,8 +95,9 @@ const Login = () => {
           <img id="logo" src={logo} alt='logo-main' />
           <input id={ showErrorStyle } type='text' placeholder='Email' value={username} required onChange={ (e) => handleEmailChange(e)} />
           <input id={ showErrorStyle } type='password'  placeholder='Password' value={password} required onChange={ (e) => handlePasswordChange(e)} />
+          
           { showLoading && 
-            <div class="spinner">
+            <div className="spinner">
               <svg viewBox='0 0 100 100'>
                 <circle cx="50" cy="50" r="20" />
               </svg>

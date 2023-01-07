@@ -4,20 +4,44 @@ body {
 
 .dashboard-container{
     margin: 0px auto;
-    padding: 2.5%;
-    background-color: #D3D3D3;
+    background-color: #121212;
     width: 100vw;
     height: 100vh;
+    color: #ffffff;
 }
+.nav-container {
+    padding: 1%;
+    margin: 0 auto;
+    display: flex;
+    position: relative;
+    background-color: #333333;
+}
+
 
 #header {
     position: relative;
     text-align: center;
-}
+    display: inline;
+    left: 36.5%;
+} 
 #logo {
     size: 100%;
     position: relative;
     display: inline;
+}
+
+
+.timesheet-container {
+    display: grid;
+    grid-template-columns: auto auto;
+    row-gap: 30px;
+    column-gap: 30px;
+    grid-column-start: 1;
+    grid-column-end: 2;
+    background-color: inherit;
+    gap: 20px;
+    padding: 20px;
+
 }
 
 .clock-in {
@@ -32,9 +56,80 @@ body {
     margin: 4px 2px;
     transition-duration: 0.7s ;
     cursor: pointer;
+
 }
 .clock-in:hover {
     background-color: #4CAF50;
     color: white;
     cursor: pointer;
+}
+
+.logout {
+    display: inline;
+    right: -70%;
+    position: relative;
+    background-color: white; 
+    border: 2px solid #4CAF50;
+    color: black;
+    padding: 16px 32px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    margin: 4px 2px;
+    transition-duration: 0.7s ;
+    cursor: pointer;
+}
+
+.logout:hover {
+    background-color: #4CAF50;
+    color: white;
+    cursor: pointer;
+}
+
+.details {
+    padding: 2%;
+    background-color: #333333;
+    height: 200px;
+    border: 2px solid #333333;
+    border-radius: 20px;
+}
+
+.print {
+    padding: 2%;
+    background-color: #333333;
+    height: 200px;
+    border: 2px solid #333333;
+    border-radius: 20px;
+    
+}
+
+.time-wrap {
+    padding: 2%;
+    background-color: #333333;
+    height: 200px;
+    border: 2px solid #333333;
+    border-radius: 20px;
+
+}
+
+.status {
+    padding: 2%;
+    background-color: #333333;
+    height: 200px;
+    border: 2px solid #333333;
+    border-radius: 20px;
+}
+
+#out {
+    background-color: red;
+    color: #000000;
+    border: 2px solid red;
+    text-align: center;
+}
+
+#in {
+    background-color: #4CAF50;
+    color: #000000;
+    border: 2px solid #4CAF50;
+    text-align: center;
 }

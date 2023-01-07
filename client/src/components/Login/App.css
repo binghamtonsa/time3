@@ -12,6 +12,7 @@ body {
     background-color: #121212;
     height: 100vh;
     width: 100vw;
+    font-family: 'Open Sans', sans-serif;
 }
 
 
@@ -46,6 +47,7 @@ body {
 
 #form-header {
     font-size: 30px;
+    font-family: 'Open Sans', sans-serif;
 }
 
 #values {
