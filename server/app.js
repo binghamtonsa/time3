@@ -1,4 +1,5 @@
 import axios from 'axios';
+import mysql from 'mysql';
 
 const URL = "https://api.getsling.com";
 
@@ -106,6 +107,31 @@ export class logOut {
             }
         })
     }
+}
+
+export class dbConnect {
+    constructor(host, user, pswrd, db) {
+        this.host = host;
+        this.user = user;
+        this.pswrd = pswrd;
+        this.db = db;
+    }
+    
+    conn() {
+        const connection = mysql.createConnection({
+            host: this.host,
+            user: this.user,
+            password: this.pswrd,
+            database: this.db
+        })
+
+        connection.connect();
+        connection.query('SELECT * FROM users', (err, rows, fields) => {
+            console.log(rows[1].name);
+        })
+        connection.end();
+    }
+
 }
 
 
