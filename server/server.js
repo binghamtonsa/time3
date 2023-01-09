@@ -1,5 +1,5 @@
 import { Login } from './auth.js'
-import { clockIn, clockOut, logOut } from './app.js';
+import { clockIn, clockOut, dbConnect, logOut } from './app.js';
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
@@ -7,7 +7,11 @@ dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 8080;
-const apiPort = process.env.API_PORT
+const apiPort = process.env.API_PORT;
+const dbHost = 'localhost';
+const dbPass = process.env.SQL_PASSWORD;
+const user =  'root';
+const database = 'dashboard';
 
 app.use(cors());
 app.use(express.json());
@@ -75,6 +79,12 @@ app.post('/v1/api/login', function(req, res) {
       }
       res.sendStatus(data.status);
     })
+  })
+
+  app.post('/v1/api/print', function(req, res) {
+    var db = new dbConnect(dbHost, user, dbPass, database, auth);
+    db.conn();
+    res.sendStatus(200);
   })
 
   app.listen(port);

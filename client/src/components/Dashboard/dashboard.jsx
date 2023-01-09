@@ -146,6 +146,22 @@ const Dashboard = () => {
     e.preventDefault();
   }
 
+  const handlePrint = async(e) => {
+    fetch(URL + "/v1/api/print", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+      }
+    })
+    .then((response) => {
+      if (response.status === 200) {
+        alert("printed");
+      } else {
+        alert("Error status: " + response.status);
+      }
+    })
+  }
+
   return(
     <div className='dashboard-container'>
       <div className='nav-container'>
@@ -170,7 +186,9 @@ const Dashboard = () => {
            { showClockOut &&  <p id='in'>Clocked In</p> }
         </div> 
         { <div className='details'>Details</div> }
-        { <div className='print'>Print Timesheet</div> }
+        { <div className='print'>
+          <button type='button' className='clock-in' onClick={handlePrint}>Print</button>
+        </div> }
       </div>
     </div>
   );
