@@ -5,7 +5,7 @@ import logo from './sa_log.png'
 
 const Dashboard = () => {
 
-  const URL = 'http://localhost:8080';
+  const URL = 'http://localhost:8000';
   const navigate = useNavigate();
   
   

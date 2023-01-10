@@ -6,7 +6,7 @@ import cors from 'cors';
 dotenv.config();
 
 const app = express();
-const port = process.env.PORT || 8080;
+const port = 8000;
 const apiPort = process.env.API_PORT;
 const dbHost = 'localhost';
 const dbPass = process.env.SQL_PASSWORD;

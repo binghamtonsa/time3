@@ -1,0 +1,41 @@
+version: '3.9'
+
+services:
+  frontend:
+    container_name: frontend
+    build:
+      context: ./client
+      dockerfile: ./Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+  backend: 
+    container_name: backend
+    build: 
+      context: ./server
+      dockerfile: ./Dockerfile
+    ports:
+      - 8000:8000
+  mysql-db:
+    image: mysql:5.7
+    container_name: mysql_container
+    environment:
+      MYSQL_HOST: localhost
+      MYSQL_ROOT_PASSWORD: ${DOCKER_ROOT_PASSWORD}
+    ports:
+      - 3306:3306
+    restart: unless-stopped
+  phpmyadmin:
+    depends_on:
+      - mysql-db
+    image: phpmyadmin/phpmyadmin
+    container_name: phpadmin_container
+    environment:
+      UPLOAD_LIMIT: 128M
+      PMA_HOST: mysql-db
+    links:
+      - mysql-db:mysql-db
+    ports:
+      - 8080:80
+    restart: always

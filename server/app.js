@@ -151,6 +151,7 @@ export class dbConnect {
                                     
                                     if ((obj.user.email) == row[i].email) {
                                         // check if user has a signature and add signature if they don't
+                                        console.log("User already in DB");
                                     }
                                     else {
                                        // 1. add user to database 

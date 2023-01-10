@@ -55,7 +55,7 @@ const Login = () => {
     formBody = formBody.join("&");
   
     return new Promise((resolve) => {
-      fetch("http://localhost:8080/v1/api/login", {
+      fetch("http://localhost:8000/v1/api/login", {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
