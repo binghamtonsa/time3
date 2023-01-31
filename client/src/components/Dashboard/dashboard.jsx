@@ -2,10 +2,11 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import './App.css'
 import logo from './sa_log.png'
+import axios from 'axios'
 
 const Dashboard = () => {
 
-  const URL = 'http://localhost:8000';
+  const URL = 'http://localhost:5000';
   const navigate = useNavigate();
   
   
@@ -16,6 +17,15 @@ const Dashboard = () => {
   const [showClockOut, setClockout] = useState(false);
   const [clockedIn, setClockIn] = useState(true);
   const [time, setTime] = useState("0");
+  const [file, setFile] = useState();
+  const [filename, setFileName] = useState("");
+  const [needFileInput, setFileInput] = useState(false);
+
+  const saveFile = (e) => {
+    setFile(e.target.files[0]);
+    setFileName(e.target.files[0].name);
+  };
+
 
   const getTime = async() => {
     const current = new Date();
@@ -58,6 +68,18 @@ const Dashboard = () => {
     }
     formBody = formBody.join("&");
     return formBody;
+  }
+
+  const handleUploadFile = async(e) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("filename", filename);
+    try {
+      const res = await axios.post(URL + "/v1/api/upload", formData);
+      console.log(res);
+    } catch(ex) {
+      console.log(ex);
+    }
   }
 
   const handleClockIn = async(e) => {
@@ -185,9 +207,12 @@ const Dashboard = () => {
            { clockedIn && <p id='out'>Clocked Out </p> }
            { showClockOut &&  <p id='in'>Clocked In</p> }
         </div> 
+
         { <div className='details'>Details</div> }
         { <div className='print'>
-          <button type='button' className='clock-in' onClick={handlePrint}>Print</button>
+          { needFileInput && <input type="file" onChange={saveFile} /> }
+          { needFileInput && <button onClick={handleUploadFile}>Upload</button> }
+          <button type='button' className='clock-in' onClick={handlePrint}>Print</button> 
         </div> }
       </div>
     </div>
