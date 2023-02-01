@@ -176,12 +176,16 @@ const Dashboard = () => {
       }
     })
     .then((response) => {
+      console.log(response.status);
       if (response.status === 200) {
-        alert("printed");
+        setFileInput(false);
+        alert("200 recieved")
       } else {
-        alert("Error status: " + response.status);
+        setFileInput(true);
+        alert("100 recieved")
       }
     })
+    e.preventDefault();
   }
 
   return(

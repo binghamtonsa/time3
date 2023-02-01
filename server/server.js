@@ -11,10 +11,10 @@ dotenv.config();
 const app = express();
 const port = 5000;
 const apiPort = process.env.API_PORT;
-const dbHost = '127.0.0.1';
+const dbHost = process.env.SQL_GATE;
 const dbPass = process.env.SQL_PASSWORD;
 const user =  'root';
-const database = 'dashboard';
+const database = 'time3';
 const URL = "https://api.getsling.com";
 
 app.use(cors());
@@ -98,7 +98,7 @@ var upload = multer({
 });
 
 app.post('/v1/api/print', function(req, res) {
-  var stats = 0;
+  var foundUserFlag = 0;
   axios.get(URL + `/v1/account/session`, {headers: {Authorization: auth}})
     .then((res) => {
       var json = JSON.stringify(res.data);
@@ -111,24 +111,36 @@ app.post('/v1/api/print', function(req, res) {
           throw err;
         }
         else {
-          connection.query(`SELECT email FROM users`, function( err, result, fields ) {
+          console.log("connected to DB");
+          connection.query(`SELECT email FROM Users`, function( err, result, fields ) {
             if (err) {
               throw err;
-          } 
-          else {
-            let row = Object.values(JSON.parse(JSON.stringify(result)));
-            // can worry about optimizing later (for loop won't be the best if the table gets larger)
-            // row[i].email -> returns the emails of everyone
-            var foundUserFlag = 0;
-            for (let i = 0; i < row.length; i++) {
-              if ((obj.user.email) == row[i].email) {
-                  foundUserFlag = 1;
+            } 
+            else {
+              let row = Object.values(JSON.parse(JSON.stringify(result)));
+              // can worry about optimizing later (for loop won't be the best if the table gets larger)
+              // row[i].email -> returns the emails of everyone
+              
+              for (let i = 0; i < row.length; i++) {
+                if (((obj.user.email) == row[i].email) && (row[i].signature != null)) {
+                    foundUserFlag = 1;
+                    console.log("User not found");
+                }
               }
             }
-          }
-          })
-        }
-    })
+            })
+          } 
+      })
+  })
+  .then(() => {
+    if (foundUserFlag == 1) {
+      console.log("Found copy");
+      res.sendStatus(200);
+    }
+    else {
+      console.log("Didn't find copy");
+      res.sendStatus(100);
+    }
   })
 })
 
@@ -148,7 +160,7 @@ app.post('/v1/api/upload', upload.single('file'), (req, res) => {
         }
         else {
             console.log("connected to DB");
-            connection.query("SELECT email FROM users", function( err, result, fields ) {
+            connection.query("SELECT email FROM Users", function( err, result, fields ) {
                 if (err) {
                     throw err;
                 } else {

@@ -16,7 +16,7 @@ services:
       context: ./server
       dockerfile: ./Dockerfile
     ports:
-      - 8000:8000
+      - 5000:5000
   mysql-db:
     image: mysql:5.7
     container_name: mysql_container
@@ -24,7 +24,7 @@ services:
       MYSQL_HOST: localhost
       MYSQL_ROOT_PASSWORD: ${DOCKER_ROOT_PASSWORD}
     ports:
-      - 3306:3306
+     - 3306:3306
     restart: unless-stopped
   phpmyadmin:
     depends_on:
