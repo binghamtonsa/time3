@@ -9,7 +9,7 @@ import axios from 'axios';
 dotenv.config();
 
 const app = express();
-const port = 5000;
+const port = 8000;
 const apiPort = process.env.API_PORT;
 const dbHost = process.env.SQL_GATE;
 const dbPass = process.env.SQL_PASSWORD;
@@ -178,7 +178,7 @@ app.post('/v1/api/upload', upload.single('file'), (req, res) => {
                       console.log("No file uploaded");
                     }
                     else {
-                      var imgsrc = 'http://127.0.0.1:5000/images' + req.file.filename
+                      var imgsrc = 'http://127.0.0.1:8000/images' + req.file.filename
                       let userName = obj.user.name + " " + obj.user.lastname;
                       let email = obj.user.email;
                       // position will change when I get a seperate table in database

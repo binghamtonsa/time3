@@ -6,7 +6,7 @@ import axios from 'axios'
 
 const Dashboard = () => {
 
-  const URL = 'http://localhost:5000';
+  const URL = 'http://localhost:8000';
   const navigate = useNavigate();
   
   
@@ -91,7 +91,7 @@ const Dashboard = () => {
       'longitude': lng,
     };
     
-    fetch(URL + "/v1/api/clockin", {
+    fetch(URL + '/v1/api/clockin', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
