@@ -1,15 +1,11 @@
-FROM node:18.4.0
+FROM node:18-alpine
 
-LABEL version="1.0"
-LABEL description="Front-end for time3 website"
-LABEL maintainer="dengine1@binghamton.edu"
-
-WORKDIR /client
-
+WORKDIR /app
 COPY ["package.json", "package-lock.json", "./"]
-COPY . .
+RUN ["npm", "ci"]
+VOLUME /app/node_modules
+
+VOLUME /app
 EXPOSE 3000
 
 CMD ["npm", "start"]
-
-
