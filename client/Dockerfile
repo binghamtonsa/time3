@@ -1,4 +1,4 @@
-FROM node:18.4.0
+FROM node:18
 
 LABEL version="1.0"
 LABEL description="Front-end for time3 website"
