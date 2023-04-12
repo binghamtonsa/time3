@@ -1,6 +1,5 @@
 FROM node:18-alpine
 
-LABEL version="1.0"
 LABEL description="back-end for time3 website"
 LABEL maintainer="dengine1@binghamton.edu"
 
