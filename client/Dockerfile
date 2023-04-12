@@ -1,12 +1,11 @@
 FROM node:18-alpine
 
 WORKDIR /app
-
-
-WORKDIR /client
-
 COPY ["package.json", "package-lock.json", "./"]
-COPY . .
+RUN ["npm", "ci"]
+VOLUME /app/node_modules
+
+VOLUME /app
 EXPOSE 3000
 
 CMD ["npm", "start"]
