@@ -10,9 +10,9 @@ services:
       - "3000:3000"
     depends_on:
       - backend
-  backend: 
+  backend:
     container_name: backend
-    build: 
+    build:
       context: ./server
       dockerfile: ./Dockerfile
     ports:
@@ -24,7 +24,7 @@ services:
       MYSQL_HOST: localhost
       MYSQL_ROOT_PASSWORD: ${DOCKER_ROOT_PASSWORD}
     ports:
-     - 3306:3306
+      - 3306:3306
     restart: unless-stopped
   phpmyadmin:
     depends_on:
