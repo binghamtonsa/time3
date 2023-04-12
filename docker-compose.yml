@@ -26,7 +26,7 @@ services:
     container_name: mysql_container
     environment:
       MYSQL_HOST: localhost
-      MYSQL_ROOT_PASSWORD: ${DOCKER_ROOT_PASSWORD}
+    env_file: .env
     ports:
       - 3306:3306
     restart: unless-stopped
