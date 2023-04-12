@@ -11,7 +11,7 @@ services:
     depends_on:
       - server
     volumes:
-      - .:/app
+      - ./client:/app
   server:
     container_name: backend
     build:
