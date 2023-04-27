@@ -2,6 +2,10 @@ body {
     margin: 0px;
 }
 
+html {
+    background-color: #000000;
+}
+
 .dashboard-container{
     margin: 0px auto;
     background-color: #121212;
@@ -10,7 +14,7 @@ body {
     color: #ffffff;
 }
 .nav-container {
-    padding: 1%;
+    padding: 2%;
     margin: 0 auto;
     display: flex;
     position: relative;
@@ -34,7 +38,8 @@ body {
 
 .timesheet-container {
     display: grid;
-    grid-template-columns: auto auto;
+    grid-template-columns: repeat(2, auto);
+    grid-template-rows: repeat(2, auto);
     row-gap: 30px;
     column-gap: 30px;
     grid-column-start: 1;
@@ -67,7 +72,7 @@ body {
 
 .logout {
     display: inline;
-    right: -70%;
+    right: -65%;
     position: relative;
     background-color: white; 
     border: 2px solid #4CAF50;
@@ -119,6 +124,8 @@ body {
     height: 200px;
     border: 2px solid #333333;
     border-radius: 20px;
+    grid-column: 1 / 1;
+    grid-row: 1 / 1 ;
 }
 
 #out {
@@ -126,6 +133,8 @@ body {
     color: #000000;
     border: 2px solid red;
     text-align: center;
+    padding: 2%;
+    
 }
 
 #in {
@@ -133,4 +142,5 @@ body {
     color: #000000;
     border: 2px solid #4CAF50;
     text-align: center;
+    padding: 2%;
 }

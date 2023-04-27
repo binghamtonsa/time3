@@ -1,27 +1,11 @@
-import mysql from 'mysql';
-import dotenv from 'dotenv'
-dotenv.config();
+import PDFDocument from 'pdfkit';
+import fs from 'fs'
 
-const connection = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: process.env.SQL_PASSWORD,
-    database: 'dashboard'
-})
+const doc = new PDFDocument;
 
-connection.connect((err) => {
-    if (err) {
-        throw err;
-    }
-    else {
-        console.log("connected to DB");
-        connection.query("SELECT * FROM users", function( err, result, fields ) {
-            if (err) {
-                throw err;
-            } else {
-                console.log(result);
-            }
-        })
-    }
-});
-
+doc.pipe(fs.createWriteStream('timesheet.pdf'));
+doc
+   
+  .fontSize(27)
+  .text('TimeSheet printing Test', 100, 100);
+doc.end();

@@ -1,14 +1,14 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import './App.css'
 import logo from './sa_log.png'
 import axios from 'axios'
+import jsPDF from 'jspdf';
 
 const Dashboard = () => {
 
   const URL = 'http://localhost:8000';
   const navigate = useNavigate();
-  
   
   const [lat, setLat] = useState('0');
   const [lng, setLng] = useState('0');
@@ -20,6 +20,11 @@ const Dashboard = () => {
   const [file, setFile] = useState();
   const [filename, setFileName] = useState("");
   const [needFileInput, setFileInput] = useState(false);
+  const [timesheetInfo, setTimesheetInfo] = useState("");
+
+  useEffect(() => {
+    handleTS()
+  }, [])
 
   const saveFile = (e) => {
     setFile(e.target.files[0]);
@@ -76,7 +81,9 @@ const Dashboard = () => {
     formData.append("filename", filename);
     try {
       const res = await axios.post(URL + "/v1/api/upload", formData);
-      console.log(res);
+      if (res.status === 200) {
+        setFileInput(false);
+      }
     } catch(ex) {
       console.log(ex);
     }
@@ -178,14 +185,110 @@ const Dashboard = () => {
     .then((response) => {
       console.log(response.status);
       if (response.status === 200) {
-        setFileInput(false);
         alert("200 recieved")
       } else {
         setFileInput(true);
-        alert("100 recieved")
       }
     })
     e.preventDefault();
+  }
+
+  const handleTS = async(e) => {
+    fetch(URL + '/v1/api/timesheet', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+      }
+    })
+    .then((response) => {
+      if (response.status === 200) {
+        let res = response.json();
+        console.log(response);
+        alert(response)
+        setTimesheetInfo(res);
+      }
+      else {
+        alert("error occured");
+      }
+    })
+  }
+
+  function handleCreatePDF() {
+    const doc = new jsPDF();
+
+   // Column widths
+   const col1Width = 40;
+   const col2Width = 30;
+   const col3Width = 30;
+   const col4Width = 30;
+   const col5Width = 30;
+   const col6Width = 30;
+   
+   // Row height
+   const rowHeight = 10;
+   
+   // Logo
+   const logoWidth = 30;
+   const logoHeight = 30;
+   const logoXPos = 10;
+   const logoYPos = 15;
+   doc.addImage(logo, 'PNG', logoXPos, logoYPos, logoWidth, logoHeight);
+   
+   // Main header
+   doc.setFontSize(20);
+   doc.setFont('helvetica', 'bold');
+   doc.text('SA Timesheet', 80, 30);
+   
+   // Table header
+   doc.setFontSize(12);
+   doc.setFont('helvetica', 'bold');
+   doc.text('Name', 10, 65);
+   doc.rect(10, 66, col1Width, rowHeight, 'S');
+   doc.text('Date', 50, 65);
+   doc.rect(50, 66, col2Width, rowHeight, 'S');
+   doc.text('Team', 80, 65);
+   doc.rect(80, 66, col3Width, rowHeight, 'S');
+   doc.text('Clock In', 110, 65);
+   doc.rect(110, 66, col4Width, rowHeight, 'S');
+   doc.text('Clock Out', 140, 65);
+   doc.rect(140, 66, col5Width, rowHeight, 'S');
+   doc.text('Shift Duration', 170, 65);
+   doc.rect(170, 66, col6Width, rowHeight, 'S');
+   
+   // Draw table grid
+   let xPos = 10;
+   let yPos = 75;
+   doc.setDrawColor(0);
+   doc.setFillColor(255);
+   doc.setFont('helvetica', 'normal');
+   for (let i = 0; i <= 5; i++) {
+     doc.rect(xPos, yPos, col1Width, rowHeight, 'FD');
+     doc.rect(xPos + col1Width, yPos, col2Width, rowHeight, 'FD');
+     doc.rect(xPos + col1Width + col2Width, yPos, col3Width, rowHeight, 'FD');
+     doc.rect(xPos + col1Width + col2Width + col3Width, yPos, col4Width, rowHeight, 'FD');
+     doc.rect(xPos + col1Width + col2Width + col3Width + col4Width, yPos, col5Width, rowHeight, 'FD');
+     doc.rect(xPos + col1Width + col2Width + col3Width + col4Width + col5Width, yPos, col6Width, rowHeight, 'FD');
+     yPos += rowHeight;
+   }
+
+   // Date and signature spot
+   const signatureXPos = 20;
+   const signatureYPos = 70 + (5 * rowHeight) + 20;
+   const signatureWidth = 100;
+   const signatureHeight = 40;
+   doc.rect(signatureXPos, signatureYPos, signatureWidth, signatureHeight);
+   doc.text('Signature', signatureXPos + (signatureWidth / 2), signatureYPos + (signatureHeight / 2), { align: 'center', baseline: 'middle' });
+   
+   // Date spot
+   const dateXPos = 130;
+   const dateYPos = 70 + (5 * rowHeight) + 20;
+   const dateWidth = 60;
+   const dateHeight = 10;
+   doc.rect(dateXPos, dateYPos, dateWidth, dateHeight);
+   doc.text('Date', dateXPos + (dateWidth / 2), dateYPos + (dateHeight / 2), { align: 'center', baseline: 'middle' });
+
+
+    doc.save('timesheet.pdf');
   }
 
   return(
@@ -206,18 +309,19 @@ const Dashboard = () => {
             </div> 
           }
         </div>
-        
         <div className='status'>Status:
            { clockedIn && <p id='out'>Clocked Out </p> }
            { showClockOut &&  <p id='in'>Clocked In</p> }
         </div> 
 
-        { <div className='details'>Details</div> }
-        { <div className='print'>
+        <div className='details'>Details
+           {console.log(timesheetInfo)}
+        </div>
+        <div className='print'>
           { needFileInput && <input type="file" onChange={saveFile} /> }
           { needFileInput && <button onClick={handleUploadFile}>Upload</button> }
-          <button type='button' className='clock-in' onClick={handlePrint}>Print</button> 
-        </div> }
+          { !needFileInput && <button type='button' className='clock-in' onClick={handleCreatePDF}>Print</button> }
+        </div>
       </div>
     </div>
   );

@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { response } from 'express';
 import mysql from 'mysql';
 
 
@@ -135,6 +136,26 @@ export class dbConnect {
     }   
 }
 
+export class retTimesheet {
+    constructor(auth) {
+        this.auth = auth;
+    }
+
+    request() {
+        let promise = axios.get(URL + '/v1/reports/timesheets', {
+            headers: {
+                'Authorization': this.auth,
+            },
+            params: {
+                'dates': '2022-01-01T13:00:00Z/2023-02-10T15:30:00Z'
+            }
+        })
+        
+        const dataPromise = promise.then((response) => response.data)
+        console.log(response);
+        return dataPromise
+    }
+}
 
 
 

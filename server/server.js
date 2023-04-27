@@ -1,11 +1,14 @@
 import { Login } from './auth.js'
-import { clockIn, clockOut, dbConnect, logOut } from './app.js';
-import express from 'express';
+import { clockIn, clockOut, dbConnect, logOut, retTimesheet } from './app.js';
+import express, { response } from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import multer from 'multer';
 import path from 'path';
 import axios from 'axios';
+import bodyParser from 'body-parser';
+import { log } from 'console';
+// import PDFDocument from 'pdfkit';
 dotenv.config();
 
 const app = express();
@@ -20,8 +23,13 @@ const URL = "https://api.getsling.com";
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({
+    extended: true
+}))
 
 var auth = "";
+var foundUserFlag;
 
 app.post('/v1/api/login', function(req, res) {
     let data = req.body;
@@ -87,10 +95,10 @@ app.post('/v1/api/logout', function(req, res) {
 
 var storage = multer.diskStorage({
   destination: (req, file, callBack) => {
-      callBack(null, './public/images')
+      callBack(null, './uploads')
   },
   filename: (req, file, callBack) => {
-      callBack(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname))
+      callBack(null, file.originalname)
   }
 })
 var upload = multer({
@@ -98,7 +106,6 @@ var upload = multer({
 });
 
 app.post('/v1/api/print', function(req, res) {
-  var foundUserFlag = 0;
   axios.get(URL + `/v1/account/session`, {headers: {Authorization: auth}})
     .then((res) => {
       var json = JSON.stringify(res.data);
@@ -122,9 +129,12 @@ app.post('/v1/api/print', function(req, res) {
               // row[i].email -> returns the emails of everyone
               
               for (let i = 0; i < row.length; i++) {
-                if (((obj.user.email) == row[i].email) && (row[i].signature != null)) {
-                    foundUserFlag = 1;
-                    console.log("User not found");
+                if (((obj.user.email) == row[i].email)) {
+                  foundUserFlag = 1;
+                  console.log("same");
+                }
+                else {
+                  foundUserFlag = 0;
                 }
               }
             }
@@ -133,13 +143,20 @@ app.post('/v1/api/print', function(req, res) {
       })
   })
   .then(() => {
-    if (foundUserFlag == 1) {
+    res.set({
+      'access-control-allow-credentials': true ,
+      'access-control-allow-headers': 'Authorization,Content-Type,Expires,Cache-Control,If-Modified-Since,Pragma,Access-Control-Allow-Origin,X-Sling-Instrumentation,X-HTTP-Method-Override', 
+      'access-control-allow-methods': 'GET,POST,PUT,DELETE,OPTIONS', 
+      'access-control-allow-origin': 'http://localhost:3000', //8000/v1/api/print
+    });
+    console.log(foundUserFlag);
+    if (foundUserFlag >= 1) {
       console.log("Found copy");
-      res.sendStatus(200);
+      res.status(200).send("Found copy");
     }
     else {
       console.log("Didn't find copy");
-      res.sendStatus(100);
+      res.status(206).send("No Copy");
     }
   })
 })
@@ -178,18 +195,19 @@ app.post('/v1/api/upload', upload.single('file'), (req, res) => {
                       console.log("No file uploaded");
                     }
                     else {
-                      var imgsrc = 'http://127.0.0.1:8000/images' + req.file.filename
+                      var imgsrc = 'http:localhost:8000/images/' + req.file.filename
                       let userName = obj.user.name + " " + obj.user.lastname;
                       let email = obj.user.email;
                       // position will change when I get a seperate table in database
-                      var insertQuery = "INSERT INTO users (name, email, position) VALUES (?,?,?)"
-
+                      var insertQuery = "INSERT INTO Users (Username, email, signature) VALUES (?,?,?)"
+                      console.log(userName + " " + email + " " + imgsrc);
                       connection.query(insertQuery, [userName, email, imgsrc], (err, result) => {
                         if (err) {
-                          console.log("error in query");
+                          console.log("error in query" + err);
                         }
                         else {
                           console.log("File uploaded and user added");
+                          foundUserFlag++;
                         }
                       })
                     }
@@ -198,7 +216,59 @@ app.post('/v1/api/upload', upload.single('file'), (req, res) => {
             })
         }
     });
-  })    
+  })
+  .then(() => {
+    res.sendStatus(200); 
+  }) 
+})
+
+function timeConvert(data) {
+  let update1 = data.replace("-", "");
+  let update2 = update1.slice(10,20).split(":");
+  var hours = Number(update2[0]);
+  var minutes = Number(update2[1]);
+  var timeValue;
+
+  if (hours > 0 && hours <= 12) {
+    timeValue= "" + hours;
+  } else if (hours > 12) {
+    timeValue= "" + (hours - 12);
+  } else if (hours == 0) {
+    timeValue= "12";
+  } 
+  timeValue += (minutes < 10) ? ":0" + minutes : ":" + minutes;  // get minutes
+  timeValue += (hours >= 12) ? " P.M." : " A.M.";  // get AM/PM
+
+  return timeValue;
+}
+
+app.post('/v1/api/timesheet', function(req, res) {
+  axios.get('https://api.getsling.com/v1/reports/timesheets', {
+    headers: {
+        'Authorization': auth,
+    },
+    params: {
+        'dates': '2023-01-01T13:00:00Z/2023-02-10T15:30:00Z'
+    }
+  })
+  .then((response) => {
+    var clockedInTime = response.data[0].timesheetEntries[0].timestamp;
+    let formatedClockInTime = timeConvert(clockedInTime);
+
+    var clockedOutTime = response.data[0].timesheetEntries[1].timestamp;
+    let formatedClockOutTime = timeConvert(clockedOutTime);
+    console.log("ClockedIn time: " + formatedClockInTime + " Clocked Out time: " + formatedClockOutTime);
+  })
+  .then(() => {
+    res.set({
+      'access-control-allow-credentials': true ,
+      'access-control-allow-headers': 'Authorization,Content-Type,Expires,Cache-Control,If-Modified-Since,Pragma,Access-Control-Allow-Origin,X-Sling-Instrumentation,X-HTTP-Method-Override', 
+      'access-control-allow-methods': 'GET,POST,PUT,DELETE,OPTIONS', 
+      'access-control-allow-origin': 'http://localhost:3000', //8000/v1/api/print
+    });
+    res.json({'data': 'Dhruv'});
+    console.log(res);
+  })
 })
 
 app.listen(port);
