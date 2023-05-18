@@ -4,6 +4,7 @@ import './App.css'
 import logo from './sa_log.png'
 import axios from 'axios'
 import jsPDF from 'jspdf';
+import DateRangePicker from './datepicker'
 
 const Dashboard = () => {
 
@@ -21,9 +22,40 @@ const Dashboard = () => {
   const [filename, setFileName] = useState("");
   const [needFileInput, setFileInput] = useState(false);
   const [timesheetInfo, setTimesheetInfo] = useState("");
+  const [dateSelected, setDateSelected] = useState(false);
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+
+  // Handle save button click
+  const handleSave = (start, end) => {
+    //console.log(start + " -  " + end);
+    let updatedStart = start.toString();
+    let finalStart = updatedStart.replace(" 00:00:00 GMT-0400 (Eastern Daylight Time)", "");
+    // finalStart = updatedStart.replace(" 00:00:00 GMT-0200 (Eastern Daylight Time)", "");
+    // finalStart = updatedStart.replace(" 00:00:00 GMT-0300 (Eastern Daylight Time)", "");
+    // finalStart = updatedStart.replace(" 00:00:00 GMT-0400 (Eastern Daylight Time)", "");
+    // finalStart = updatedStart.replace(" 00:00:00 GMT-0500 (Eastern Daylight Time)", "");
+    // finalStart = updatedStart.replace(" 00:00:00 GMT-0600 (Eastern Daylight Time)", "");
+    // finalStart = updatedStart.replace(" 00:00:00 GMT-0700 (Eastern Daylight Time)", "");
+    // finalStart = updatedStart.replace(" 00:00:00 GMT-0800 (Eastern Daylight Time)", "");
+    // finalStart = updatedStart.replace(" 00:00:00 GMT-0900 (Eastern Daylight Time)", "");
+    let upadtedEnd = end.toString();
+    let finalEnd = upadtedEnd.replace(" 00:00:00 GMT-0400 (Eastern Daylight Time)", "");
+    // finalEnd = upadtedEnd.replace(" 00:00:00 GMT-0200 (Eastern Daylight Time)", "");
+    // finalEnd = upadtedEnd.replace(" 00:00:00 GMT-0300 (Eastern Daylight Time)", "");
+    // finalEnd = upadtedEnd.replace(" 00:00:00 GMT-0400 (Eastern Daylight Time)", "");
+    // finalEnd = upadtedEnd.replace(" 00:00:00 GMT-0500 (Eastern Daylight Time)", "");
+    // finalEnd = upadtedEnd.replace(" 00:00:00 GMT-0600 (Eastern Daylight Time)", "");
+    // finalEnd = upadtedEnd.replace(" 00:00:00 GMT-0700 (Eastern Daylight Time)", "");
+    // finalEnd = upadtedEnd.replace(" 00:00:00 GMT-0800 (Eastern Daylight Time)", "");
+    // finalEnd = upadtedEnd.replace(" 00:00:00 GMT-0900 (Eastern Daylight Time)", "");
+    setStartDate(finalStart);
+    setEndDate(finalEnd);
+    setDateSelected(true);
+  };
 
   useEffect(() => {
-    handleTS()
+    handlePrint()
   }, [])
 
   const saveFile = (e) => {
@@ -185,7 +217,8 @@ const Dashboard = () => {
     .then((response) => {
       console.log(response.status);
       if (response.status === 200) {
-        alert("200 recieved")
+        setFileInput(false);
+        alert("Already Found singature on Database");
       } else {
         setFileInput(true);
       }
@@ -204,7 +237,7 @@ const Dashboard = () => {
       if (response.status === 200) {
         let res = response.json();
         console.log(response);
-        alert(response)
+
         setTimesheetInfo(res);
       }
       else {
@@ -238,6 +271,10 @@ const Dashboard = () => {
    doc.setFontSize(20);
    doc.setFont('helvetica', 'bold');
    doc.text('SA Timesheet', 80, 30);
+
+   doc.setFontSize(16);
+   doc.setFont('helvetica', 'bold');
+   doc.text(startDate + " - " + endDate, 50, 42);
    
    // Table header
    doc.setFontSize(12);
@@ -320,7 +357,8 @@ const Dashboard = () => {
         <div className='print'>
           { needFileInput && <input type="file" onChange={saveFile} /> }
           { needFileInput && <button onClick={handleUploadFile}>Upload</button> }
-          { !needFileInput && <button type='button' className='clock-in' onClick={handleCreatePDF}>Print</button> }
+          { !needFileInput && !dateSelected && <DateRangePicker onSave={handleSave}/> }
+          { !needFileInput && dateSelected && <button type='button' className='clock-in' onClick={handleCreatePDF}>Print</button> }
         </div>
       </div>
     </div>
